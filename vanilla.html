@@ -5,56 +5,47 @@
   </body>
   <script
     crossorigin
-    src="https://unpkg.com/react@18/umd/react.production.min.js"
+    src="https://unpkg.com/react@18/umd/react.development.js"
   ></script>
   <script
     crossorigin
     src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
   ></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/prop-types@15.7.2/prop-types.js"></script>
   <script type="text/babel">
-    const root = document.getElementById("root");
+    function Btn({text, changeValue}) {
+      console.log(text,"was rendered")
+      return (
+        <button
+          onClick={changeValue}
+          style={{
+            backgroundColor: "tomato",
+            color: "white",
+            padding: "10px 20px",
+            border: 0,
+            borderRadius: 10,
+          }}
+        >
+          {text}
+        </button>
+      );
+    }
+    Btn.propTypes = {
+      text: PropTypes.string,
+    }
     function App() {
-      const [amount, setAmount] = React.useState();
-      const [flipped, setFlipped] = React.useState(false);
-      const onChange = (event) => {
-        setAmount(event.target.value);
-      };
-      const reset = () => setAmount(0);
-      const onFlip = () => {
-        reset();
-        setFlipped((current) => !current);
-      };
+      const [value, setValue] = React.useState("Save Changes");
+      const changeValue = () => setValue("Revert Changes");
       return (
         <div>
-          <h1>Super Converter</h1>
-          <div>
-            <label for="minutes">Minutes</label>
-            <input
-              value={flipped ? amount*60 :amount}
-              id="minutes"
-              placeholder="Minutes"
-              type="number"
-              onChange={onChange}
-              disabled={flipped}
-            />
-          </div>
-          <div>
-            <label for="hours">Hours</label>
-            <input
-              value={flipped ? amount : Math.round(amount / 60)}
-              id="hours"
-              placeholder="Hours"
-              type="number"
-              onChange={onChange}
-              disabled={!flipped}
-            />
-          </div>
-          <button onClick={reset}>reset</button>
-          <button onClick={onFlip}>flip</button>
+          <Btn text="Continue" />
+          <Btn text={41} changeValue={changeValue} />
+
         </div>
       );
     }
+    const root = document.getElementById("root");
     ReactDOM.render(<App />, root);
   </script>
 </html>
