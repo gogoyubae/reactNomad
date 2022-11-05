@@ -1,6 +1,7 @@
 import http from "http";
 import socketIO from "socket.io"
 import express from "express";
+import { Socket } from "socket.io";
 
 const app = express();
 
@@ -13,6 +14,17 @@ app.get("/*", (req, res) => res.redirect("/"));
 const handleListen = () => console.log(`Listening on http://localhost:3000`);
 const httpServer = http.createServer(app);
 const wsServer  = socketIO(httpServer);
+wsServer.on("connection", (backSocket) => {
+    backSocket.on("enter_room", (roomName, done) => {
+        console.log(socket.rooms);
+        socket.join(roomName);
+        console.log(socket.rooms);
+        setTimeout(()=> {
+            done("hello frm the backend");
+        }, 10000)
+    });
+});
+
 // const sockets =[];
 
 //represents the browser that just connected
