@@ -14,14 +14,15 @@ app.get("/*", (req, res) => res.redirect("/"));
 const handleListen = () => console.log(`Listening on http://localhost:3000`);
 const httpServer = http.createServer(app);
 const wsServer  = socketIO(httpServer);
+
 wsServer.on("connection", (backSocket) => {
+    backSocket.onAny((event) => {
+        console.log(`Socket Event: ${event}`);
+    });
     backSocket.on("enter_room", (roomName, done) => {
-        console.log(socket.rooms);
-        socket.join(roomName);
-        console.log(socket.rooms);
-        setTimeout(()=> {
-            done("hello frm the backend");
-        }, 10000)
+        backSocket.join(roomName);
+        done();
+        backSocket.to(roomName).emit("welcome");
     });
 });
 

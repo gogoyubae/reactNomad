@@ -1,17 +1,39 @@
+import { Socket } from "socket.io";
+
 const frontSocket = io();
 
 const welcome = document.getElementById("welcome");
 const form = welcome.querySelector("form");
+const room = document.getElementById("room");
 
-function backendDone(msg){
-    console.log(`The backend says:`, msg);
+room.hidden = true;
+let roomName;
+
+function addMessage(message){
+    const ul = room.querySelector("ul")
+    const li = document.createElement("li");
+    li.innerText = message;
+    ul.appendChild(li);
+}
+
+function showRoom(msg){
+    welcome.hidden = true;
+    room.hidden = false;
+    const h3 = room.querySelector("h3");
+    h3.innerText = `Room ${roomName}`;
 }
 
 function handleRoomSubmit(event){
     event.preventDefault();
     const input = form.querySelector("input");
-    frontSocket.emit("enter_room", {payload: input.value}, backendDone)
+    frontSocket.emit("enter_room", input.value, showRoom);
+    roomName = input.value;
     input.value = "";
 }
 
 form.addEventListener("submit", handleRoomSubmit);
+
+
+frontSocket.on("welcome", ()=>{
+    addMessage("someone joined");
+})
